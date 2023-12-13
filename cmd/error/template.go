@@ -10,6 +10,10 @@ func (err ErrorCode) Code() int64 {
 	return int64(err)
 }
 
+func (err ErrorCode) String() string {
+	return ""
+}
+
 type ErrorInfo struct {
 	Code int64
 	Msg  string

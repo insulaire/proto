@@ -6,6 +6,18 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
+func protocVersion(gen *protogen.Plugin) string {
+	v := gen.Request.GetCompilerVersion()
+	if v == nil {
+		return "(unknown)"
+	}
+	var suffix string
+	if s := v.GetSuffix(); s != "" {
+		suffix = "-" + s
+	}
+	return fmt.Sprintf("v%d.%d.%d%s", v.GetMajor(), v.GetMinor(), v.GetPatch(), suffix)
+}
+
 // generateFile generates a _errors.pb.go file containing kratos errors definitions.
 func generateFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
 	filename := file.GeneratedFilenamePrefix + "_errors.pb.go"
@@ -17,7 +29,6 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 	g.P()
 	g.P("package ", file.GoPackageName)
 	g.P()
-	g.QualifiedGoIdent(fmtPackage.Ident(""))
 	generateFileContent(gen, file, g)
 	return g
 }
